@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 36 Quiz 2</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }[data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }[data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }[data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }[data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }[data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 36 Quiz 2</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData =[
+            // --- Section 1: Oral Pathology and Upper GI Disorders ---
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO1: Describe and recognize selected benign conditions and infections of the oral cavity.",
+                question: "A 22-year-old female medical student presents to the student health clinic complaining of an extremely painful sore in her mouth that developed during final exams. Examination of the buccal mucosa reveals a shallow, superficial ulceration covered by a thin exudate and rimmed by erythema. The physician reassures her that the condition is idiopathic and should resolve without intervention. What is the expected time frame for the spontaneous resolution of this lesion?",
+                options: {
+                    A: "1 to 3 days",
+                    B: "7 to 10 days",
+                    C: "14 to 21 days",
+                    D: "4 to 6 weeks",
+                    E: "Does not resolve without antiviral therapy"
+                },
+                correctAnswer: "B",
+                rationale: "The patient's presentation of an extremely painful, shallow mucosal ulceration covered by a thin exudate and rimmed by erythema during a period of stress is characteristic of an aphthous ulcer (canker sore). These lesions resolve spontaneously in 7-10 days.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 6: 'APHTHOUS ULCERS (CANKER SORES) • Superficial mucosal ulceration • Shallow ulcerations covered by thin exudate • Rimmed by erythema... • Extremely painful. • Recurrent (may be stress induced) • Cause is unknown (idiopathic) • Resolves spontaneously in 7-10 days'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO1: Describe and recognize selected benign conditions and infections of the oral cavity.",
+                question: "A 45-year-old male with a history of AIDS presents with mouth discomfort. Oral examination reveals multiple superficial, white inflammatory membranes on his palate. The physician is easily able to scrape off one of the white plaques, revealing an underlying erythematous base. Which of the following organisms is the most likely cause of this patient's condition?",
+                options: {
+                    A: "Candida albicans",
+                    B: "Epstein-Barr virus",
+                    C: "Helicobacter pylori",
+                    D: "Herpes simplex virus type 1",
+                    E: "Staphylococcus aureus"
+                },
+                correctAnswer: "A",
+                rationale: "Oral candidiasis (thrush) is the most common fungal infection of the oral cavity and is caused by Candida albicans. It is associated with immunosuppression (such as AIDS) and presents as superficial, white inflammatory pseudomembranes that are easily scraped off to reveal an underlying erythematous base.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 8: 'ORAL CANDIDIASIS (THRUSH) • Most common fungal infection of the oral cavity • Candida albicans... • Disease (overgrowth) associated with: • Immunosuppression (diabetics, transplant patients, AIDS)... • Pseudomembranes • Superficial, white inflammatory membrane • Easily scraped off – underlying erythematous base'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO2: Discuss the risk factors, precursor lesions, and clinicopathologic aspects of oral squamous cell carcinoma.",
+                question: "A 65-year-old man with a 40-pack-year smoking history undergoes an oral examination. The dentist notes a white patch on the lateral border of the patient's tongue. The patch cannot be scraped off. A biopsy of the lesion is recommended. Which of the following best describes the rationale for always performing a biopsy on this specific type of lesion?",
+                options: {
+                    A: "Approximately 25% are premalignant and will progress to squamous cell carcinoma.",
+                    B: "It is caused by Epstein-Barr virus and requires viral subtyping.",
+                    C: "It is the most common benign tumor of the oral cavity.",
+                    D: "It represents a focal systemic mastocytosis infection.",
+                    E: "More than 50% are malignant at the time of initial presentation."
+                },
+                correctAnswer: "A",
+                rationale: "A white patch or plaque that cannot be scraped off is termed leukoplakia. It is caused by epidermal thickening or hyperkeratosis and is strongly associated with tobacco use. It must always be biopsied because approximately 25% are premalignant and will progress to squamous cell carcinoma. (Note: Erythroplakia is a \"red patch\" where more than 50% are premalignant).",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 9: 'LEUKOPLAKIA • “White patch” or plaque • Cannot be scraped off • Caused by epidermal thickening or hyperkeratosis • ~25% are premalignant and will progress to squamous cell carcinoma. • Always biopsy because of high risk for progression to oral squamous cell carcinoma.'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO2: Discuss the risk factors, precursor lesions, and clinicopathologic aspects of oral squamous cell carcinoma.",
+                question: "A 50-year-old man is diagnosed with oral squamous cell carcinoma (SCC). Pathologic evaluation of the tumor reveals that it involves the tonsillar crypts and base of the tongue, and has a nonkeratinizing, basaloid morphology. The oncologist notes that this specific subtype of SCC generally carries a better prognosis than tobacco-associated SCC. Which of the following is the most likely primary risk factor for this patient's tumor?",
+                options: {
+                    A: "Chronic alcohol consumption",
+                    B: "Epstein-Barr virus",
+                    C: "Human papillomavirus (HPV)",
+                    D: "Immunosuppression from HIV/AIDS",
+                    E: "Smoked tobacco"
+                },
+                correctAnswer: "C",
+                rationale: "Oral squamous cell carcinoma associated with Human papillomavirus (HPV), specifically high-risk types like HPV-16, frequently involves the tonsillar crypts and base of the tongue. It often presents with a nonkeratinizing, basaloid morphology and carries a better prognosis than HPV-negative (tobacco/alcohol-associated) tumors.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 13: 'SQUAMOUS CELL CARCINOMA... 2) Human papillomavirus (HPV) • High-risk types, HPV-16... • Tonsillar crypts, base of tongue, oropharynx • Frequently nonkeratinizing, basaloid • Prognosis for HPV + tumors is better than for HPV – tumors'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO3: Describe clinicopathologic aspects of selected benign entities and neoplasms of the salivary glands.",
+                question: "A 45-year-old female presents to the clinic with a painless, slow-growing, moveable mass at the angle of her jaw. Surgical excision of the mass is performed. Histopathologic examination of the parotid gland tumor reveals epithelial cells forming ducts and acini mixed within a myxomatous and cartilaginous stroma. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Ameloblastoma",
+                    B: "Dentigerous cyst",
+                    C: "Mucoepidermoid carcinoma",
+                    D: "Pleomorphic adenoma",
+                    E: "Warthin tumor"
+                },
+                correctAnswer: "D",
+                rationale: "Pleomorphic adenoma is the most common benign tumor of the salivary glands, typically presenting in females as a painless, slow-growing, moveable mass at the angle of the jaw (parotid gland). The defining histologic feature is its pleomorphic nature, containing both epithelial cells (ducts, acini) and stromal elements (myxomatous stroma, cartilaginous tissue).",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 20: 'PLEOMORPHIC ADENOMA • Most common benign tumor (90%) • Parotid is most common site • Female predominance • Painless, slow-growing, moveable mass at angle of the jaw • Pleomorphic = • Epithelial cells- ducts, acini, tubules, strands, sheets • Myxomatous stroma • Cartilaginous'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO3: Describe clinicopathologic aspects of selected benign entities and neoplasms of the salivary glands.",
+                question: "A 60-year-old male with a heavy smoking history presents with bilateral swellings in his parotid glands. Microscopic evaluation of a biopsy sample demonstrates cystic glandular structures lined by a two-tiered epithelium, surrounded by abundant benign lymphoid tissue. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Ameloblastoma",
+                    B: "Mucoepidermoid carcinoma",
+                    C: "Pleomorphic adenoma",
+                    D: "Squamous cell carcinoma",
+                    E: "Warthin tumor"
+                },
+                correctAnswer: "E",
+                rationale: "Warthin tumor is a benign parotid gland tumor that is male predominant, strongly associated with smokers, and can be bilateral. It is characterized by two distinct components: cystic glandular structures lined by two-tiered epithelium and benign lymphoid tissue.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 21: 'WARTHIN TUMOR • Benign parotid gland tumor • Male predominant • Can be bilateral • Smokers, smokers, smokers • 2 characteristic components: • Cystic glandular structures lined by two-tiered epithelium • Benign lymphoid tissue'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO4: Describe two common odontogenic tumors in terms of their histopathology and radiologic appearance.",
+                question: "A 16-year-old boy undergoes a routine dental radiograph, which reveals a radiolucency surrounding the crown of an unerupted third molar. The lesion is excised, and histopathology shows a cystic space lined by non-keratinizing squamous epithelium. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Ameloblastoma",
+                    B: "Dentigerous cyst",
+                    C: "Gastrinoma",
+                    D: "Leukoplakia",
+                    E: "Pleomorphic adenoma"
+                },
+                correctAnswer: "B",
+                rationale: "A dentigerous cyst is the most common odontogenic cyst. It derives from epithelial elements of dental origin and is classically associated with an unerupted or impacted tooth. Histologically, it is a cyst lined by non-keratinizing squamous epithelium.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 25: 'DENTIGEROUS CYST Most common odontogenic cyst Derives from epithelial elements of dental origin (odontogenic origin) • Associated with an unerupted/ impacted teeth... Histopathology: cyst lined by non-keratinizing squamous epithelium'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO4: Describe two common odontogenic tumors in terms of their histopathology and radiologic appearance.",
+                question: "A 35-year-old woman presents with a swelling in her mandible. A radiograph of the jaw shows a multilocular, \"soap bubble\" radiolucency. Biopsy reveals palisaded basal cells exhibiting reverse polarity, where the nuclei are situated away from the basement membrane, along with stellate reticulum. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Ameloblastoma",
+                    B: "Dentigerous cyst",
+                    C: "Mucoepidermoid carcinoma",
+                    D: "Pleomorphic adenoma",
+                    E: "Warthin tumor"
+                },
+                correctAnswer: "A",
+                rationale: "Ameloblastoma is a locally aggressive tumor located in the mandible that presents radiologically with a classic \"soap bubble\" appearance. Histopathologically, it is characterized by palisaded basal cells with reverse polarity (nuclei away from the basement membrane) and stellate reticulum (star-shaped cells).",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 26: 'AMELOBLASTOMA... Located in mandible • Radiolucency = “soap bubble” appearance • Locally aggressive • Histopathology: • Palisaded basal cells with reverse polarity (nuclei away from basement membrane) • Stellate reticulum (star-shaped cells)'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO5: Discuss selected pathologic conditions of the esophagus in terms of their presentation, pathophysiology, and histopathology.",
+                question: "A 32-year-old atopic male presents with difficulty swallowing and episodes of food impaction. Endoscopy reveals circumferential rings in the esophagus (feline esophagus). A biopsy is taken, and histopathologic examination demonstrates a prominent epithelial infiltration by large numbers of eosinophils, including eosinophilic microabscesses (clusters of >4). Which of the following treatments is most appropriate for managing this patient's underlying condition?",
+                options: {
+                    A: "Dietary restrictions to prevent exposure to food allergens",
+                    B: "Eradication therapy for Helicobacter pylori",
+                    C: "Long-term surveillance for progression to squamous cell carcinoma",
+                    D: "Surgical resection of the affected esophageal segment",
+                    E: "Vitamin B12 supplementation"
+                },
+                correctAnswer: "A",
+                rationale: "The patient has Eosinophilic Esophagitis (EOE), characterized by food impaction in adults, a history of atopy, endoscopic circumferential rings, and prominent eosinophils with microabscesses on histology. Treatments include dietary restrictions to prevent exposure to food allergens (milk, soy, gluten, etc).",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 36: 'EOSINOPHILIC ESOPHAGITIS (EOE) • Epithelial infiltration by large numbers of eosinophils • Symptoms • Food impaction and dysphagia in adults • Majority of patients are atopic • Treatments include dietary restrictions to prevent exposure to food allergens (milk, soy, gluten, etc) • Histology: prominent eosinophils with diffuse distribution, eosinophilic microabscesses (>4 clustered together)'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO5: Discuss selected pathologic conditions of the esophagus in terms of their presentation, pathophysiology, and histopathology.",
+                question: "A 55-year-old man with a long-standing history of severe heartburn and regurgitation undergoes an upper endoscopy. The endoscopist observes a salmon-colored mucosa extending proximal to the gastroesophageal junction. A biopsy is obtained to evaluate for metaplasia resulting from chronic gastric acid exposure. The presence of which of the following specific cells on histology is diagnostic for Barrett Esophagus in the USA?",
+                options: {
+                    A: "Ciliated columnar cells",
+                    B: "Eosinophils",
+                    C: "Goblet cells",
+                    D: "Neutrophils",
+                    E: "Signet ring cells"
+                },
+                correctAnswer: "C",
+                rationale: "Barrett Esophagus is a complication of GERD where injury to the squamous mucosa leads to metaplasia. In the USA, the diagnosis specifically requires the identification of intestinal-type metaplasia, which is characterized by the presence of goblet cells.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 39: 'BARRETT ESOPHAGUS • A complication of GERD... Injury to squamous mucosa leads to metaplasia • Can be gastric or intestinal type metaplasia • Intestinal metaplasia with GOBLET CELLS= Barrett Esophagus (in the USA)'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO6: Identify the causes of acute and chronic gastritis.",
+                question: "A 45-year-old woman presents to the emergency department with epigastric pain, nausea, and vomiting. She reports taking high doses of NSAIDs over the past week for joint pain. An endoscopy is performed, and a biopsy of the gastric mucosa demonstrates transient mucosal inflammation, edema, and mucosal erosion. Which of the following inflammatory cells is the hallmark histologic finding for this patient's condition?",
+                options: {
+                    A: "Eosinophils",
+                    B: "Lymphocytes",
+                    C: "Macrophages",
+                    D: "Neutrophils",
+                    E: "Plasma cells"
+                },
+                correctAnswer: "D",
+                rationale: "The patient's presentation and history of NSAID use point to acute gastritis. The hallmark cell of transient mucosal inflammation seen in acute gastritis is the neutrophil.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 45: 'ACUTE GASTRITIS • Transient mucosal inflammation • Hallmark: neutrophils • May also see: mucosal erosion, ulceration, hemorrhage, edema • Symptoms: epigastric pain, nausea, vomiting, hematemesis... • Risk Factors: • NSAIDs, H. pylori, ingestion of harsh chemicals'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO6: Identify the causes of acute and chronic gastritis.",
+                question: "A 60-year-old man is diagnosed with autoimmune atrophic gastritis following an evaluation for megaloblastic anemia. His laboratory results demonstrate a severe vitamin B12 deficiency. In this specific disease process, autoimmune destruction targets cells located in the body and fundus of the stomach. Which of the following cells are destroyed, leading to the loss of intrinsic factor?",
+                options: {
+                    A: "Chief cells",
+                    B: "Enterochromaffin-like (ECL) cells",
+                    C: "G cells",
+                    D: "Mucous neck cells",
+                    E: "Parietal cells"
+                },
+                correctAnswer: "E",
+                rationale: "Autoimmune atrophic gastritis involves the autoimmune destruction of gastric parietal cells located in the body and fundus of the stomach. Because parietal cells secrete intrinsic factor (IF), their destruction leads to a lack of IF, decreased vitamin B12 absorption, and subsequent pernicious (megaloblastic) anemia.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 51: 'A CLOSER LOOK AT AUTOIMMUNE GASTRITIS • Autoimmune destruction of gastric parietal cells in body and fundus. • Antibodies against parietal cells and/or intrinsic factor... • Pernicious anemia • Lack of IF→decreased vitamin B12 absorption • Megaloblastic anemia'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO7: Recognize the etiology and complications of peptic ulcer disease.",
+                question: "A 30-year-old man is admitted to the intensive care unit following severe accidental CNS trauma. Several days into his admission, he develops nausea, abdominal pain, and coffee-ground emesis. Endoscopy reveals acute, rounded ulcers in the stomach with bases stained black by acid-digested extravasated red blood cells. The hypersecretion of gastric acid in this patient is most directly caused by stimulation of which of the following nerves?",
+                options: {
+                    A: "Facial nerve",
+                    B: "Glossopharyngeal nerve",
+                    C: "Hypoglossal nerve",
+                    D: "Trigeminal nerve",
+                    E: "Vagal nerve"
+                },
+                correctAnswer: "E",
+                rationale: "The patient has developed Cushing ulcers, a type of acute stress ulcer associated with CNS trauma. The pathophysiology involves stimulation of the vagal nerve, which leads to gastric acid hypersecretion and subsequent mucosal ulceration.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 46: 'ACUTE GASTRIC ULCERS • Result from severe physiologic distress (AKA stress ulcers)... • Cushing ulcers: • CNS trauma (hemorrhage, surgical, accidental) • Stimulation of vagal nerve leads to gastric acid hypersecretion'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO7: Recognize the etiology and complications of peptic ulcer disease.",
+                question: "A 50-year-old man presents to the clinic complaining of recurring epigastric pain. He reports that the pain is most noticeable when he is fasting but reliably improves shortly after he eats meals. Based on this classic symptom presentation, which of the following is the most likely location of his ulcer?",
+                options: {
+                    A: "Distal esophagus",
+                    B: "Duodenum",
+                    C: "Gastric antrum",
+                    D: "Gastric body",
+                    E: "Gastric fundus"
+                },
+                correctAnswer: "B",
+                rationale: "In peptic ulcer disease, the location of the ulcer affects the timing of symptoms relative to eating. A duodenal ulcer classically presents with epigastric pain that improves with meals, whereas a gastric ulcer presents with epigastric pain that worsens with a meal.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 52: 'PEPTIC ULCER DISEASE... • Duodenal ulcer • Epigastric pain that improves with meals • Gastric Ulcer • Epigastric pain that worsens with meal'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO8: Compare and contrast selected neoplasms of the stomach.",
+                question: "A 55-year-old woman presents with weight loss, early satiety, and epigastric pain. Upper endoscopy reveals a \"leather bottle\" stomach (linitis plastica) with diffusely thickened walls that distend poorly. Biopsy of the gastric wall demonstrates individual tumor cells widely dispersed throughout the tissue. Which of the following specific cell types is classically seen on high-power histopathology in this condition?",
+                options: {
+                    A: "Basaloid cells",
+                    B: "Keratin pearls",
+                    C: "Multinucleated giant cells",
+                    D: "Signet ring cells",
+                    E: "Stellate reticulum"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has diffuse type gastric adenocarcinoma, which is characterized grossly by a \"leather bottle\" stomach (linitis plastica) with thickened walls and poor distension. Microscopically, the individual tumor cells widely dispersed through the gastric wall are classically \"signet ring\" cells.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 56: 'GASTRIC ADENOCARCINOMA- DIFFUSE TYPE • “Leather bottle” stomach (aka linitis plastica) • Diffusely thickened walls with poor distension • Individual tumor cells widely dispersed through gastric wall • “signet ring” cells classically'"
+            },
+            {
+                section: "Oral Pathology and Upper GI Disorders",
+                fullLO: "LO8: Compare and contrast selected neoplasms of the stomach.",
+                question: "A 65-year-old man with a history of chronic H. pylori gastritis presents with progressive weight loss, anemia, and vomiting with melena. Endoscopy reveals a discrete mass with central ulceration and heaped borders in the stomach. Biopsy demonstrates a malignant proliferation of well-formed glands lacking cytoplasmic mucin. Which of the following is the most accurate classification of this neoplasm?",
+                options: {
+                    A: "Diffuse type gastric adenocarcinoma",
+                    B: "Gastrointestinal stromal tumor (GIST)",
+                    C: "Intestinal type gastric adenocarcinoma",
+                    D: "Mucosa-associated lymphoid tissue (MALT) lymphoma",
+                    E: "Squamous cell carcinoma"
+                },
+                correctAnswer: "C",
+                rationale: "Intestinal type gastric adenocarcinoma presents as a discrete lesion (mass or ulcer) and is composed of glandular structures (well-formed glands lacking cytoplasmic mucin). It presents late with weight loss, abdominal pain, anemia, and melena, and may have precursor lesions like intestinal metaplasia caused by chronic H. pylori gastritis.",
+                source: "Oral and Upper Gastrointestinal Pathology PDF, slide 55: 'GASTRIC ADENOCARCINOMA- INTESTINAL TYPE • Malignant proliferation of epithelial cells forming glands (adenocarcinoma) • Presents as a discrete lesion- mass or ulcer • Composed of glandular structures • Presents late with weight loss, abdominal pain, anemia, early satiety, vomiting with melena... Intestinal-type adenocarcinoma of the stomach: well-formed glands, lack of cytoplasmic mucin'"
+            },
+
+            // --- Section 2: GI General Principles and Exocrine Secretions ---
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO1: Discuss general principles of GI function, including physiologic anatomy of GI wall, chemical messengers, GI hormones, and nervous system of GI.",
+                question: "The Enteric Nervous System (ENS) provides intrinsic control over gastrointestinal motility and secretions. Within the myenteric plexus, certain neurons send inhibitory motor signals that are essential for regulating the passage of food through the GI tract. Which of the following is a primary function of these inhibitory motor signals?",
+                options: {
+                    A: "Increasing the intensity of rhythmic contractions",
+                    B: "Increasing the velocity of conduction of excitatory waves",
+                    C: "Inhibiting sphincter muscles (pyloric and ileocecal)",
+                    D: "Stimulating mucosal secretions",
+                    E: "Stimulating parietal cell acid secretion"
+                },
+                correctAnswer: "C",
+                rationale: "The myenteric plexus controls motility. While it sends stimulatory signals to increase tone and contractions, it also sends inhibitory motor signals specifically aimed at inhibiting sphincter muscles (like the pyloric and ileocecal sphincters) that normally impede emptying, thus allowing forward movement of the bolus.",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slide 11: 'The Myenteric Plexus... Sends inhibitory motor signals: • Inhibiting sphincter muscles (pyloric and ileocecal) that normally impede emptying'"
+            },
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO1: Discuss general principles of GI function, including physiologic anatomy of GI wall, chemical messengers, GI hormones, and nervous system of GI.",
+                question: "Following a meal, the presence of specific macromolecules in the duodenum triggers the release of hormones to modulate GI function. Which of the following hormones is secreted by I cells in the duodenum and jejunum in direct response to the presence of fatty acids or monoglycerides in the intestinal lumen?",
+                options: {
+                    A: "Cholecystokinin (CCK)",
+                    B: "Gastrin",
+                    C: "Glucose-dependent insulinotropic peptide (GLIP)",
+                    D: "Motilin",
+                    E: "Secretin"
+                },
+                correctAnswer: "A",
+                rationale: "Cholecystokinin (CCK) is produced by I cells located in the duodenum and jejunum. Its secretion is chemically stimulated by the presence of fatty acids or monoglycerides (and amino acids) in the intestinal lumen.",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slide 23: 'Cholecystokinin (CCK) Cell Type: I cells Location: duodenum and jejunum... Chemical stimuli for secretion: fatty acids or monoglycerides (not triglycerides) and amino acids in intestinal lumen'"
+            },
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO2: Explain the physiological function of gastric acid and regulation of gastric acid secretion.",
+                question: "Parietal cells in the stomach are responsible for producing large quantities of highly acidic gastric juice (pH of 0.8). Which of the following membrane transport proteins is the main driver of hydrogen ion (HCl) secretion at the apical membrane of the parietal cell?",
+                options: {
+                    A: "Carbonic anhydrase",
+                    B: "Cl-/HCO3- Exchanger",
+                    C: "H+/K+ pump (ATPase)",
+                    D: "Na+/K+ ATPase",
+                    E: "Voltage-dependent calcium channel"
+                },
+                correctAnswer: "C",
+                rationale: "The production of HCl requires substantial energy (1500 calories/L of gastric juice). The main driver of this active secretion into the stomach lumen is the H+/K+ pump (ATPase) located on the apical membrane of the oxyntic (parietal) cell.",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slide 45: 'Oxyntic (Parietal) Cells 160 mmol/L of HCl pH of 0.8 Production requires 1500 calories/L of gastric juice Main driver of HCl secretion is: H+/K+ pump (ATPase)'"
+            },
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO2: Explain the physiological function of gastric acid and regulation of gastric acid secretion.",
+                question: "The secretion of hydrochloric acid by parietal cells is highly regulated by neurohumoral modulation. Optimal acid secretion relies on the synergistic action of multiple molecules binding to the parietal cell. Which of the following combinations of chemical messengers works synergistically to stimulate HCl secretion?",
+                options: {
+                    A: "Acetylcholine, Cholecystokinin, and Secretin",
+                    B: "Acetylcholine, Gastrin, and Histamine",
+                    C: "Gastrin, Motilin, and Vasoactive intestinal peptide (VIP)",
+                    D: "Histamine, Secretin, and Somatostatin",
+                    E: "Norepinephrine, Gastrin, and Somatostatin"
+                },
+                correctAnswer: "B",
+                rationale: "HCl secretion by parietal cells is synergistically stimulated by three primary messengers: Gastrin (from G cells), Histamine (from ECL cells), and Acetylcholine (ACh, from parasympathetic vagal fibers). Somatostatin, conversely, inhibits acid secretion.",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slide 47: 'Neurohumoral modulation of HCl Secretion by Parietal Cells in the Stomach: Synergism...[Diagram shows Gastrin, Histamine, and ACh all providing positive (+) stimulation to the Parietal cell to increase H+ Acid secretion]'"
+            },
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO3: Discuss the stimuli for pepsinogen release and the mechanism for activating pepsinogen.",
+                question: "A medical researcher is studying the initiation of protein digestion within the stomach. She isolates peptic (chief) cells and observes the active secretion of an inactive zymogen called pepsinogen. In order for this zymogen to be converted into its active enzymatic form to partially digest dietary proteins, it must interact with which of the following substances in the gastric lumen?",
+                options: {
+                    A: "Acetylcholine",
+                    B: "Gastrin",
+                    C: "Histamine",
+                    D: "Hydrochloric acid (HCl)",
+                    E: "Secretin"
+                },
+                correctAnswer: "D",
+                rationale: "Peptic (chief) cells secrete pepsinogen as an inactive zymogen. To become the active enzyme pepsin (which then partially digests dietary proteins), pepsinogen must be activated by exposure to hydrochloric acid (HCl).",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slide 48: 'Pepsinogen Secretion from Peptic/Chief Cells / Pepsinogen Activation to Pepsin...[Diagram showing: Pepsinogen (zymogen) interacting with HCl -> Pepsin (active enzyme) -> Dietary proteins -> Partially digested protein]'"
+            },
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO3: Discuss the stimuli for pepsinogen release and the mechanism for activating pepsinogen.",
+                question: "A 45-year-old man eats a large steak dinner. During the subsequent phases of gastric function, his peptic (chief) cells are stimulated to release copious amounts of pepsinogen. Which of the following neurotransmitters directly stimulates the secretion of pepsinogen from these specific gastric cells?",
+                options: {
+                    A: "Acetylcholine",
+                    B: "Gastrin-releasing peptide (GRP)",
+                    C: "Histamine",
+                    D: "Nitric oxide",
+                    E: "Somatostatin"
+                },
+                correctAnswer: "A",
+                rationale: "The secretion of pepsinogen by peptic (chief) cells is directly stimulated by the release of acetylcholine (ACh) from parasympathetic or enteric neurons. The rate of this secretion is also influenced by the concentration of HCl in the stomach.",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slides 44 & 48: 'Chemical Factors that Stimulate Gastric Secretions... Acetylcholine (parasympathetic)- stimulates secretion of: pepsinogen by peptic/chief cells' and 'Pepsinogen Secretion from Peptic/Chief Cells... Stimulus for secretion: Ach from enteric or parasympathetic neurons'"
+            },
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO4: Discuss small intestinal and large intestinal secretions.",
+                question: "As highly acidic chyme empties from the stomach into the first part of the small intestine, it encounters secretions designed to protect the local mucosa. Brunner's glands, located in the duodenum, secrete large amounts of alkaline mucus. Which of the following hormones is an important stimulus for increasing the secretion from these specific glands?",
+                options: {
+                    A: "Gastrin",
+                    B: "Motilin",
+                    C: "Norepinephrine",
+                    D: "Secretin",
+                    E: "Somatostatin"
+                },
+                correctAnswer: "D",
+                rationale: "Brunner's glands protect the duodenal mucosa from acidic chyme by secreting large amounts of alkaline mucus. This secretion is stimulated by tactile/irritating stimuli, vagal stimulation, and gastrointestinal hormones, especially secretin.",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slide 58: 'Brunner’s Glands - Duodenum • Secrete large amounts of alkaline mucus in response to: • tactile or irritating stimuli on the duodenal mucosa • vagal stimulation... • gastrointestinal hormones, especially secretin • Secretions protect the duodenum mucosa from acidic chyme'"
+            },
+            {
+                section: "GI General Principles and Exocrine Secretions",
+                fullLO: "LO4: Discuss small intestinal and large intestinal secretions.",
+                question: "While reviewing the physiology of the large intestine, a student notes that the primary functions of the colon are to absorb water and electrolytes and to serve as a reservoir for waste storage. To facilitate the safe passage of feces and protect the colonic wall, the primary secretion of the large intestine consists overwhelmingly of which of the following substances?",
+                options: {
+                    A: "Alpha-amylase",
+                    B: "Bicarbonate-rich fluid",
+                    C: "Enterokinase",
+                    D: "Mucus",
+                    E: "Pepsinogen"
+                },
+                correctAnswer: "D",
+                rationale: "Unlike the stomach or small intestine which secrete various digestive enzymes, the secretions of the colon are almost entirely dedicated to lubrication and protection, heavily dominated by mucus production.",
+                source: "General Principles of Gastrointestinal Function and Exocrine Secretions PDF, slide 61: 'Secretions of the Colon MUCUS, MUCUS, MUCUS'"
+            },
+
+            // --- Section 3: Motility and Related Reflexes ---
+            {
+                section: "Motility and Related Reflexes",
+                fullLO: "LO1: Describe the stages involved in swallowing and peristalsis.",
+                question: "The movement of materials along the length of the esophagus predominantly depends on peristalsis. The primary peristaltic wave is a continuation of the initial wave that begins in the pharynx. Which of the following conditions would result in the inability of primary peristalsis to occur in the esophagus?",
+                options: {
+                    A: "Decreased activity of the Interstitial Cells of Cajal",
+                    B: "Presence of an acidic bolus in the duodenum",
+                    C: "Surgical removal of part of the Vagus nerve (vagotomy)",
+                    D: "Surgical resection of the gastric antrum",
+                    E: "Sympathetic nervous system overactivation"
+                },
+                correctAnswer: "C",
+                rationale: "Primary peristalsis in the esophagus is under the control of vagovagal reflexes (afferent and efferent fibers traveling in the vagus nerve). Therefore, it cannot occur after a vagotomy.",
+                source: "GI Motility and Related Reflexes PDF, slide 17: 'Esophageal Phase of Swallowing (Deglutition) Two types of peristaltic movements: Primary Peristalsis • Continuation of the initial peristaltic wave that begins in the pharynx... • Cannot occur after vagotomy (surgical removal of part of Vagus nerve)'"
+            },
+            {
+                section: "Motility and Related Reflexes",
+                fullLO: "LO1: Describe the stages involved in swallowing and peristalsis.",
+                question: "During the pharyngeal phase of swallowing, the food bolus is propelled into the esophagus. For the bolus to enter the esophagus smoothly, a specific physiological event must occur simultaneously with the contraction of the middle and lower constrictors of the pharynx. Which of the following correctly describes this required event?",
+                options: {
+                    A: "Contraction of the cricopharyngeal muscle",
+                    B: "Relaxation of the lower esophageal sphincter (LES)",
+                    C: "Relaxation of the upper esophageal sphincter (UES)",
+                    D: "Superior movement of the epiglottis",
+                    E: "Upward movement of the trachea"
+                },
+                correctAnswer: "C",
+                rationale: "The upper esophageal sphincter (UES) is normally closed at rest. During the pharyngeal phase of swallowing, as the pharyngeal constrictors contract to propel the bolus downward, the UES (cricopharyngeal muscle) must relax to allow the bolus to enter the esophagus.",
+                source: "GI Motility and Related Reflexes PDF, slides 14 & 15: 'The Swallowing Reflex: Voluntary and Pharyngeal Phases... (C) Propulsion through the upper esophageal sphincter is accomplished by contraction of the middle and lower constrictors of the pharynx and by relaxation of the cricopharyngeal muscle. [Graphic shows UES relaxes]'"
+            },
+            {
+                section: "Motility and Related Reflexes",
+                fullLO: "LO2: Describe gastric motility, small intestinal motility, and large intestinal motility.",
+                question: "Gastric motility patterns are designed to thoroughly mix food with gastric juice to form a semifluid called chyme. During this process, peristaltic contractions sweep toward the pylorus. The forward progression of the contents is periodically inhibited, resulting in the churning of the intestinal contents. Which of the following events directly causes this retro-propulsion (churning) of chyme?",
+                options: {
+                    A: "Increased strength of contraction closing the pyloric sphincter",
+                    B: "Opening of the lower esophageal sphincter (LES)",
+                    C: "Receptive relaxation of the gastric fundus",
+                    D: "Relaxation of the longitudinal muscle layer of the stomach",
+                    E: "Secretion of motilin during the fasting state"
+                },
+                correctAnswer: "A",
+                rationale: "As peristaltic mixing waves sweep toward the pylorus, they increase in strength. This strong contraction ultimately closes the pyloric sphincter against the advancing bolus, which forces the chyme to be propelled backward into the stomach (retro-propulsion), allowing for thorough mixing and grinding.",
+                source: "GI Motility and Related Reflexes PDF, slides 20 & 24: 'Gastric Motility... Peristalsis causes mixing. The forward progression of the contents is inhibited by a sphincter so the peristaltic wave results in churning of the intestinal contents.' and 'Peristaltic Waves of Propulsive Gastric Motility... Increased strength closes pyloric sphincter. Causes retro-propulsion of chyme'"
+            },
+            {
+                section: "Motility and Related Reflexes",
+                fullLO: "LO2: Describe gastric motility, small intestinal motility, and large intestinal motility.",
+                question: "Large intestine motility is responsible for mixing contents and propelling waste toward the rectum for elimination. Which of the following terms specifically describes the localized mixing movements in the colon where circular and longitudinal smooth muscles constrict, causing the intestine to bulge outward into sacs?",
+                options: {
+                    A: "Haustrations",
+                    B: "Mass movements",
+                    C: "Migrating myoelectric complexes",
+                    D: "Peristaltic rushes",
+                    E: "Receptive relaxations"
+                },
+                correctAnswer: "A",
+                rationale: "In the large intestine, mixing movements are called haustrations. They occur when circular and longitudinal smooth muscles constrict at various points, causing the large intestine to bulge outward to form sacs, which mixes and exposes chyme to the surface. Propulsive movements in the colon are called mass movements.",
+                source: "GI Motility and Related Reflexes PDF, slide 32: 'Large Intestine Motility – Haustrations and Mass Movement... Haustrations: Mixing movements 1. Circular smooth muscle constricts at various points 2. Longitudinal smooth muscle constricts 3. Large intestine bulges outward to form sacs'"
+            },
+            {
+                section: "Motility and Related Reflexes",
+                fullLO: "LO3: Describe the reflexes that direct motility in the fed (enterogastric, gastrocolic, and gastroileal) and fasting states.",
+                question: "A 45-year-old woman eats a large meal after a long day of work. The distention and stretch of her stomach by the food initiate a neural reflex mediated by the myenteric plexus. This reflex subsequently promotes increased colonic motility and initiates mass movements in her large intestine. Which of the following reflexes is responsible for this response?",
+                options: {
+                    A: "Defecation reflex",
+                    B: "Enterogastric reflex",
+                    C: "Gastrocolic reflex",
+                    D: "Gastroileal reflex",
+                    E: "Rectosphincteric reflex"
+                },
+                correctAnswer: "C",
+                rationale: "The gastrocolic reflex is initiated by distention/stretch of the stomach. This signal (via the myenteric plexus) promotes increased colonic motility, specifically initiating mass movements in the large intestine to clear the colon for new waste.",
+                source: "GI Motility and Related Reflexes PDF, slide 34: 'Gastrocolic Reflex – Promotes Colon Motility. Initiated by distention/stretch of the stomach the myenteric plexus promotes increased colonic motility. Initiates mass movements in the large intestine'"
+            },
+            {
+                section: "Motility and Related Reflexes",
+                fullLO: "LO3: Describe the reflexes that direct motility in the fed (enterogastric, gastrocolic, and gastroileal) and fasting states.",
+                question: "During the digestive process, as highly acidic and fat-rich chyme enters the first part of the small intestine, sensory receptors are stimulated. This initiates a reflex that sends signals back to the stomach to decrease stomach motility and slow gastric emptying. Which of the following is the correct name for this specific reflex?",
+                options: {
+                    A: "Enterogastric reflex",
+                    B: "Gastrocolic reflex",
+                    C: "Gastroileal reflex",
+                    D: "Ileocecal reflex",
+                    E: "Rectosphincteric reflex"
+                },
+                correctAnswer: "A",
+                rationale: "Reflexes are named with the first part referring to the organ where the stimulus occurs, and the second part referring to the organ whose function is affected. A stimulus in the intestine (entero) that affects the stomach (gastric) to decrease motility is the enterogastric reflex.",
+                source: "GI Motility and Related Reflexes PDF, slide 26: 'Enterogastric Reflex Slowing gastric emptying... A note about named reflexes: Each name has two parts First part refers to organ where stimulus occurs Second part refers to organ whose function is affected Entero = intestine Gastric = stomach... Enterogastric reflex – stimulus in duodenum causes decreased stomach motility'"
+            },
+            {
+                section: "Motility and Related Reflexes",
+                fullLO: "LO3: Describe the reflexes that direct motility in the fed (enterogastric, gastrocolic, and gastroileal) and fasting states.",
+                question: "A healthy volunteer is participating in a study evaluating gastrointestinal motility after an overnight fast. Researchers observe a pattern of peristaltic activity beginning in the lower portion of the stomach and traveling about 2 feet along the small intestine before dying out, followed by subsequent waves starting slightly farther down. This cyclic activity takes about 2 hours to reach the large intestine. The cycle length of this activity is primarily modulated by which of the following hormones?",
+                options: {
+                    A: "Cholecystokinin (CCK)",
+                    B: "Gastrin",
+                    C: "Motilin",
+                    D: "Secretin",
+                    E: "Somatostatin"
+                },
+                correctAnswer: "C",
+                rationale: "During the fasting state, the Migrating Myoelectric Complex (MMC) replaces segmenting contractions. It acts to sweep undigested material and bacteria through the small intestine. The cycle length of the MMC is modulated by the hormone motilin, which is secreted in the fasting state at ~90-100-minute intervals.",
+                source: "GI Motility and Related Reflexes PDF, slide 35: 'Migrating Myoelectric Complex (MMC) • Fasting state mechanism... • Cycle length modulated in part by motilin (plasma levels fluctuate in same periodicity as MMC cycle length of ~90-100 minutes'"
+            },
+
+            // --- Section 4: Celiac Trunk and Associated Abdominal Viscera ---
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO1: Describe the peritoneum and peritoneal cavity, and distinguish parietal from visceral peritoneum, intraperitoneal from retroperitoneal organs, peritoneal reflections and folds, mesenteries, and recesses. Discuss the clinical significance of these structures.",
+                question: "Anatomy students are reviewing the positional relationships of abdominal organs relative to the peritoneal cavity. They categorize organs as either intraperitoneal (mobile, almost completely surrounded by visceral peritoneum) or retroperitoneal (less mobile, located posterior to the parietal peritoneum). Which of the following organs is correctly classified as a retroperitoneal structure?",
+                options: {
+                    A: "Appendix",
+                    B: "Liver",
+                    C: "Pancreas (except tail)",
+                    D: "Spleen",
+                    E: "Transverse colon"
+                },
+                correctAnswer: "C",
+                rationale: "Using the mnemonic \"SAD PUCKER\" for retroperitoneal structures, the pancreas (except for its tail, which extends into the splenorenal ligament) is a retroperitoneal organ. The spleen, liver, appendix, and transverse colon are all intraperitoneal structures.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 9: 'Intraperitoneal vs. Retroperitoneal Structures... Retroperitoneal Structures • Posterior to parietal peritoneum (outside peritoneal cavity) • Less mobile or immobile • SAD PUCKER... Pancreas (except tail)'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO1: Describe the peritoneum and peritoneal cavity, and distinguish parietal from visceral peritoneum, intraperitoneal from retroperitoneal organs, peritoneal reflections and folds, mesenteries, and recesses. Discuss the clinical significance of these structures.",
+                question: "During surgery in the upper abdomen, the surgical team explores the lesser omentum to identify the vascular supply entering the liver. The lesser omentum connects the lesser curvature of the stomach and duodenum to the liver and is composed of two primary ligaments. Which of the following ligaments contains the portal triad?",
+                options: {
+                    A: "Falciform ligament",
+                    B: "Hepatoduodenal ligament",
+                    C: "Hepatogastric ligament",
+                    D: "Round ligament of the liver",
+                    E: "Splenorenal ligament"
+                },
+                correctAnswer: "B",
+                rationale: "The lesser omentum is composed of two ligaments: the hepatogastric ligament and the hepatoduodenal ligament. The hepatoduodenal ligament is the thick free edge of the lesser omentum and contains the portal triad (portal vein, proper hepatic artery, and common bile duct).",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 6: 'Omenta • Lesser Omentum • Connects the lesser curvature of the stomach and duodenum to the liver • Composed of 2 ligaments: • hepatoduodenal ligament – contains the portal triad (portal V, proper hepatic A, bile duct) • Hepatogastric ligament'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO2: Identify the distal esophagus, stomach, duodenum, liver, gallbladder, pancreas, and spleen. Describe their locations, gross structure (including parts, internal features, and ducts), neurovascular supply, referred pain pattern, relationships to other structures, and basic functions.",
+                question: "A 22-year-old male is brought to the emergency department after a motorcycle accident where he suffered blunt force trauma to the left upper quadrant (LUQ) of his abdomen. Imaging confirms a life-threatening hemorrhage from a large intraperitoneal lymphatic organ that functions to filter RBCs and platelets. Under normal anatomical conditions, which of the following bony structures directly protects this organ?",
+                options: {
+                    A: "Ribs 5-7",
+                    B: "Ribs 7-9",
+                    C: "Ribs 9-12",
+                    D: "Sternum",
+                    E: "Xiphoid process"
+                },
+                correctAnswer: "C",
+                rationale: "The spleen is a large lymphatic, intraperitoneal organ located in the Left Upper Quadrant (LUQ). It is normally not palpable because it is protected by ribs 9-12. Splenic rupture due to trauma is a surgical emergency leading to life-threatening hemorrhage.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 45: 'Spleen • Large lymphatic organ • Intraperitoneal • Functions: filter RBCs/platelets, immune response, RBC storage... • Location: LUQ • Protected by ribs 9-12; not palpable'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO2: Identify the distal esophagus, stomach, duodenum, liver, gallbladder, pancreas, and spleen. Describe their locations, gross structure (including parts, internal features, and ducts), neurovascular supply, referred pain pattern, relationships to other structures, and basic functions.",
+                question: "A gastroenterologist performs an upper endoscopy and navigates the scope into the first and shortest section of the small intestine. The scope is advanced past the superior part into the second segment of this organ. In this specific region, the endoscopist identifies a mucosal structure where both the common bile duct and the main pancreatic duct unite and empty their contents. Which part of the duodenum is the endoscope currently located in?",
+                options: {
+                    A: "Ascending (4th) part",
+                    B: "Descending (2nd) part",
+                    C: "Duodenojejunal junction",
+                    D: "Inferior (3rd) part",
+                    E: "Superior (1st) part"
+                },
+                correctAnswer: "B",
+                rationale: "The duodenum has 4 parts. The Common Bile Duct and Main Pancreatic Duct unite and enter the duodenum at the Major Duodenal Papilla, which is located in the internal aspect of the descending (2nd) part of the duodenum.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slides 21 & 22: 'Duodenum 1. Superior (1st) Part 2. Descending (2nd) Part... Duodenum: Internal Aspect • 2nd Part receives: • Bile from the Common Bile Duct... • Pancreatic enzymes from the Accessory and Main Pancreatic Ducts... enter at the Major Duodenal Papilla'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO3: Identify typical branching patterns of the celiac trunk. Discuss the anastomoses between arterial branches and the importance of these in providing collateral circulation.",
+                question: "A medical student is studying the arterial blood supply of the foregut. The celiac trunk is the first unpaired artery off the abdominal aorta and provides three major branches: the left gastric artery, the splenic artery, and the common hepatic artery. The common hepatic artery subsequently divides. Which of the following branches directly gives rise to the Right and Left Hepatic arteries that carry oxygen-rich blood into the liver?",
+                options: {
+                    A: "Anterior superior pancreaticoduodenal artery",
+                    B: "Gastroduodenal artery",
+                    C: "Proper hepatic artery",
+                    D: "Right gastric artery",
+                    E: "Right gastro-omental artery"
+                },
+                correctAnswer: "C",
+                rationale: "The common hepatic artery (off the celiac trunk) divides into the gastroduodenal artery and the proper hepatic artery. The proper hepatic artery then ascends toward the liver, eventually dividing into the Right and Left Hepatic Arteries, which carry oxygen-rich blood into the liver.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slides 11 & 32: 'Blood Supply of the Foregut: Celiac Trunk... 3. common hepatic A 3a. proper hepatic A • R gastric A • R hepatic A • L hepatic A' and 'Liver- Blood Supply from Celiac Trunk -> common hepatic A: • Proper Hepatic A and Left & Right Hepatic As carry oxygen-rich blood into liver'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO3: Identify typical branching patterns of the celiac trunk. Discuss the anastomoses between arterial branches and the importance of these in providing collateral circulation.",
+                question: "During an angiogram of the abdominal aorta, contrast dye is injected into the celiac trunk. The radiologist notes a prominent branch supplying the lesser curvature of the stomach, which also gives off an esophageal branch. Which of the following arteries is being observed?",
+                options: {
+                    A: "Gastroduodenal artery",
+                    B: "Left gastric artery",
+                    C: "Left gastro-omental artery",
+                    D: "Right gastric artery",
+                    E: "Splenic artery"
+                },
+                correctAnswer: "B",
+                rationale: "The Left Gastric Artery is one of the three primary branches of the celiac trunk. It gives off an esophageal branch and supplies the lesser curvature of the stomach (where it anastomoses with the Right Gastric Artery).",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slides 11 & 18: 'Blood Supply of the Foregut: Celiac Trunk... Branches: 1. left gastric A • esophageal br.' and 'Stomach- Vasculature Lesser Curvature: • Left Gastric A (off celiac trunk)'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO4: Identify the portal triad and discuss its components. Identify the portal vein and tributaries. Compare & contrast the two sources of blood to the liver. Correlate porto-systemic anastomosis with the clinical signs/symptoms of portal hypertension.",
+                question: "A 58-year-old male with a history of severe cirrhosis presents to the emergency department with massive hematemesis. Endoscopy reveals ruptured dilated submucosal veins in the lower esophagus. This medical emergency is a complication of portal hypertension forcing blood through a porto-systemic (portocaval) anastomosis. At this specific site, the portal venous system communicates with the systemic venous system by connecting the left gastric vein to which of the following veins?",
+                options: {
+                    A: "Azygos vein",
+                    B: "Deep circumflex iliac vein",
+                    C: "Inferior vena cava",
+                    D: "Splenic vein",
+                    E: "Superior mesenteric vein"
+                },
+                correctAnswer: "A",
+                rationale: "Esophageal varices occur when portal hypertension causes blood to back up into the left gastric vein (portal system), which anastomoses with the esophageal veins draining into the azygos vein (systemic system/superior vena cava). Rupture of these varices causes massive hematemesis and is a leading cause of death in cirrhosis.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 15: 'Esophagus- Vasculature Venous Drainage • Esophageal Veins drain into: • Left Gastric Vein -> Portal Vein (portal system) • Azygos Vein -> Superior Vena Cava (systemic system) Portosystemic anastomosis site'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO4: Identify the portal triad and discuss its components. Identify the portal vein and tributaries. Compare & contrast the two sources of blood to the liver. Correlate porto-systemic anastomosis with the clinical signs/symptoms of portal hypertension.",
+                question: "Blood draining from the gastrointestinal tract, spleen, and pancreas must be filtered and processed by the liver before returning to the heart. This nutrient-rich blood is delivered to the liver primarily by the portal vein. The portal vein is formed directly by the union of which of the following two major veins?",
+                options: {
+                    A: "Hepatic veins and inferior vena cava",
+                    B: "Inferior mesenteric vein and superior mesenteric vein",
+                    C: "Left gastric vein and right gastric vein",
+                    D: "Renal vein and inferior vena cava",
+                    E: "Superior mesenteric vein and splenic vein"
+                },
+                correctAnswer: "E",
+                rationale: "The portal vein carries nutrient-rich blood to the liver. It is anatomically formed by the union of the Superior Mesenteric Vein and the Splenic Vein. The Inferior Mesenteric Vein usually drains into the Splenic Vein or Superior Mesenteric Vein before the confluence.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 33: 'Liver- Portal Venous System & Drainage • Portal Vein carries nutrient-rich blood from the GI tract, spleen, and pancreas into liver • Union of Superior Mesenteric Vein and Splenic Vein'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO5: Identify and describe the biliary system. Identify the boundaries of the cystic triangle (of Calot) and the course of the cystic artery.",
+                question: "During a laparoscopic cholecystectomy (removal of the gallbladder), the surgeon must carefully identify and ligate the arterial blood supply to the gallbladder to prevent severe bleeding. This artery is found within a specific anatomic space known as the Triangle of Calot (cystohepatic triangle). Which of the following structures forms the boundaries of this triangle?",
+                options: {
+                    A: "Liver, common bile duct, and gastroduodenal artery",
+                    B: "Liver, hepatic duct, and cystic duct",
+                    C: "Proper hepatic artery, common hepatic duct, and cystic duct",
+                    D: "Right hepatic artery, left hepatic artery, and cystic duct",
+                    E: "Stomach, duodenum, and pancreas"
+                },
+                correctAnswer: "B",
+                rationale: "The cystic artery supplies the gallbladder and is located within the Triangle of Calot (cystohepatic triangle). The anatomical borders of this triangle are the inferior edge of the liver, the common hepatic duct, and the cystic duct.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 36: 'Gallbladder- Blood Supply • Cystic Artery • Located in the Triangle of Calot (cystohepatic triangle) • Borders: liver, hepatic duct, cystic duct'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO5: Identify and describe the biliary system. Identify the boundaries of the cystic triangle (of Calot) and the course of the cystic artery.",
+                question: "Bile is constantly produced by the liver and stored in the gallbladder until the presence of food triggers its release. When stimulated, bile exits the gallbladder and flows into the duodenum. Through which of the following sequences of ducts does bile travel from the gallbladder to the major duodenal papilla?",
+                options: {
+                    A: "Common bile duct -> Cystic duct -> Main pancreatic duct",
+                    B: "Common hepatic duct -> Cystic duct -> Common bile duct",
+                    C: "Cystic duct -> Common bile duct -> Major duodenal papilla",
+                    D: "Left hepatic duct -> Common hepatic duct -> Cystic duct",
+                    E: "Right hepatic duct -> Common bile duct -> Cystic duct"
+                },
+                correctAnswer: "C",
+                rationale: "Bile exits the gallbladder via the Cystic Duct, which then joins the Common Hepatic Duct (carrying bile from the liver) to form the Common Bile Duct. The Common Bile Duct then empties into the duodenum at the major duodenal papilla.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 31: 'Liver- Flow of Bile... • Exits gallbladder via Cystic Duct • Join into Common Hepatic Duct • Join to form Common Bile Duct... • Empties into duodenum at the major duodenal papilla'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO6: Discuss the anatomical basis and clinical significance of the following: hiatal hernias, gastric/duodenal ulcers, portal hypertension, ascites, cholelithiasis (gallstones) & cholecystectomy, splenic rupture, and splenomegaly.",
+                question: "A 60-year-old obese female complains of heartburn and occasional regurgitation of stomach contents after eating. A barium swallow reveals that a portion of her stomach protrudes into the thorax through the esophageal hiatus (at approximately T10). The radiologist notes that the herniation specifically involves the cardia of the stomach moving upward. Which of the following is the correct classification for this anatomical abnormality?",
+                options: {
+                    A: "Diaphragmatic eventration",
+                    B: "Inguinal hernia",
+                    C: "Para-esophageal hiatal hernia",
+                    D: "Sliding hiatal hernia",
+                    E: "Spigelian hernia"
+                },
+                correctAnswer: "D",
+                rationale: "A hiatal hernia occurs when the stomach protrudes into the thorax through the esophageal hiatus due to weakening of the diaphragm. There are two main types. A sliding hiatal hernia (~95% of cases) involves herniation of the cardia and is associated with some regurgitation of stomach contents. A para-esophageal hernia involves herniation of the fundus alongside the esophagus and typically presents with no regurgitation.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 19: 'Hiatal Hernias • Stomach protrudes into the thorax through the esophageal hiatus • Cause: weakening of diaphragm and widening of the hiatus • 2 types: Sliding • ~95% cases • Herniation of Cardia • Some regurgitation of stomach contents [vs] Para-Esophageal • Herniation of Fundus • No regurgitation'"
+            },
+            {
+                section: "Celiac Trunk and Associated Abdominal Viscera",
+                fullLO: "LO6: Discuss the anatomical basis and clinical significance of the following: hiatal hernias, gastric/duodenal ulcers, portal hypertension, ascites, cholelithiasis (gallstones) & cholecystectomy, splenic rupture, and splenomegaly.",
+                question: "A 45-year-old female presents to the clinic with severe right upper quadrant (RUQ) abdominal pain. The physician suspects an inflamed gallbladder (cholecystitis). In addition to her abdominal pain, the patient reports a deep, aching pain in her right shoulder. This specific pattern of referred pain occurs because the inflamed gallbladder irritates the parietal peritoneum lining the underside of the diaphragm. To which of the following spinal cord segments is this sensory information localized by the brain?",
+                options: {
+                    A: "C3-C5",
+                    B: "T1-T4",
+                    C: "T5-T9",
+                    D: "T10-T11",
+                    E: "L1-L2"
+                },
+                correctAnswer: "A",
+                rationale: "The parietal peritoneum lining the underside of the diaphragm is somatically innervated by the phrenic nerve (C3-C5). Irritation of this specific area (such as from an inflamed gallbladder, hepatomegaly, or tumors) results in referred pain that the brain misinterprets as coming from the corresponding C3-C5 dermatomes, which are located in the shoulder.",
+                source: "Upper GI Tract Anatomy: Abdominal Viscera & Celiac Trunk PDF, slide 51: 'Innervation of Foregut Viscera Referred Pain of the Diaphragm • Parietal peritoneum lines the underside of the diaphragm (somatically innervated by C3-C5). • Thus, irritation to this area gets localized to this area gets localized to C3-C5 dermatomes in the shoulder. • Hepatomegaly • Inflamed gallbladder'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Oral Pathology")) btnText = "Oral Path & Upper GI";
+                    if (btnText.includes("GI General Principles")) btnText = "GI Principles & Secretions";
+                    if (btnText.includes("Motility and Related Reflexes")) btnText = "Motility & Reflexes";
+                    if (btnText.includes("Celiac Trunk")) btnText = "Celiac Trunk & Viscera";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
