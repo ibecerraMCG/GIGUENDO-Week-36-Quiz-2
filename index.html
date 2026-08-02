@@ -1394,7 +1394,7 @@ function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); 
 const sections = [];
 quizData.forEach(q => { if (!sections.includes(q.section)) sections.push(q.section); });
 function shortLabel(name) {
-    const map = {};
+    const map = {"Oral Pathology and Upper GI Disorders":"Oral Path & Upper GI","GI General Principles and Exocrine Secretions":"GI Principles & Secretions","Celiac Trunk and Associated Abdominal Viscera":"Celiac Trunk & Viscera"};
     return map[name] || name;
 }
 window.__bbShortLabel = shortLabel;
